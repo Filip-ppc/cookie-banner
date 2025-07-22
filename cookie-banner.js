@@ -2,7 +2,7 @@
   // 🔧 PERSONALIZACE – upravitelné barvy
   const COLORS = {
     bannerBg:       '#F8F4EC',
-    bannerBorder:   '#1A2A3A',
+    bannerBorder:   '#a62b0c',
     textColor:      '#1A2A3A',
     btnBg:          '#1A2A3A',
     btnText:        '#fff',
