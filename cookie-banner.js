@@ -1,5 +1,4 @@
 (function() {
-  // 🔧 PERSONALIZACE – upravitelné barvy
   const COLORS = {
     bannerBg:       '#F8F4EC',
     bannerBorder:   '#a62b0c',
@@ -9,28 +8,15 @@
     btnBorder:      '#1A2A3A'
   };
 
-  // Consent Mode DEFAULT STAV
-  if (typeof gtag === 'function') {
-    gtag('consent', 'default', {
-      'ad_storage': 'denied',
-      'analytics_storage': 'denied',
-      'functionality_storage': 'granted',
-      'security_storage': 'granted'
-    });
-  }
-
   const css = `
     #cookie-banner, #cookie-settings-btn {
-      font-family: sans-serif; color: ${COLORS.textColor};
-      z-index: 9999;
+      font-family: sans-serif; color: ${COLORS.textColor}; z-index: 9999;
     }
     #cookie-banner {
-      position: fixed; bottom: 20px; left: 50%;
-      transform: translateX(-50%);
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
       max-width: 600px; width: calc(100% - 40px);
       background: ${COLORS.bannerBg}; border: 2px solid ${COLORS.bannerBorder};
-      border-radius: 8px; padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+      border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
     }
     #cookie-banner[aria-hidden="false"] { display: block; }
     #cookie-banner[aria-hidden="true"]  { display: none; }
@@ -50,8 +36,7 @@
       background: ${COLORS.btnBg}; color: ${COLORS.btnText};
     }
     #cookie-banner .cb-btn.link {
-      background: none; border: none; text-decoration: underline;
-      padding: 0;
+      background: none; border: none; text-decoration: underline; padding: 0;
     }
     #cookie-banner .cb-details {
       margin-top: 15px; border-top: 1px solid #ccc; padding-top: 15px;
@@ -76,8 +61,7 @@
     #cookie-settings-btn {
       position: fixed; bottom: 20px; right: 20px;
       background: ${COLORS.btnBg}; color: ${COLORS.btnText}; border: none;
-      padding: 8px 12px; border-radius: 4px; cursor: pointer;
-      display: none;
+      padding: 8px 12px; border-radius: 4px; cursor: pointer; display: none;
     }
     @media (max-width: 480px) {
       #cookie-banner { padding: 15px; }
@@ -86,6 +70,7 @@
       #cookie-banner .cb-actions .cb-buttons { flex-direction: column; }
     }
   `;
+
   const style = document.createElement('style');
   style.innerHTML = css;
   document.head.appendChild(style);
@@ -104,17 +89,25 @@
     return m ? m.pop() : '';
   }
 
+  // Consent Mode DEFAULT
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    ad_storage: 'denied', analytics_storage: 'denied', ad_user_data: 'denied',
+    ad_personalization: 'denied', personalization_storage: 'denied',
+    functionality_storage: 'granted', security_storage: 'granted'
+  });
+
   const cm = getCookie('cc_marketing'), ca = getCookie('cc_analytics');
   if (cm || ca) {
-    if (typeof gtag === 'function') {
-      gtag('consent', 'update', {
-        'ad_storage': cm === 'yes' ? 'granted' : 'denied',
-        'analytics_storage': ca === 'yes' ? 'granted' : 'denied',
-        'functionality_storage': 'granted',
-        'ad_user_data': cm === 'yes' ? 'granted' : 'denied',
-        'ad_personalization': cm === 'yes' ? 'granted' : 'denied'
-      });
-    }
+    gtag('consent', 'update', {
+      ad_storage: cm === 'yes' ? 'granted' : 'denied',
+      analytics_storage: ca === 'yes' ? 'granted' : 'denied',
+      ad_user_data: cm === 'yes' ? 'granted' : 'denied',
+      ad_personalization: cm === 'yes' ? 'granted' : 'denied',
+      personalization_storage: cm === 'yes' ? 'granted' : 'denied',
+      functionality_storage: 'granted', security_storage: 'granted'
+    });
     showManageBtn();
     return;
   }
@@ -129,20 +122,19 @@
       </div>
       <p class="cb-description">
         K personalizaci obsahu a reklam, poskytování funkcí sociálních sítí a analýze návštěvnosti používáme cookies.
-        Další informace a nastavení najdete v
-        <a href="${POLICY_URL}" target="_blank">Zásadách cookies</a>.
+        Další informace a nastavení najdete v <a href="${POLICY_URL}" target="_blank">Zásadách cookies</a>.
       </p>
       <div class="cb-actions">
         <button id="cb-settings-toggle" class="cb-btn link">Podrobné nastavení ▼</button>
       </div>
       <div id="cb-details" class="cb-details" style="display:none">
         <p>Vyberte, jaké soubory cookie chcete povolit:</p>
-        <details id="cb-analytics-section" open>
+        <details id="cb-analytics-section">
           <summary>Analytické cookies</summary>
           <p>Statistické cookies pomáhají majitelům webu porozumět chování návštěvíků. Anonymně sbírají data.</p>
           <label><input type="checkbox" id="cb-analytics"> Povolit analytické cookies</label>
         </details>
-        <details id="cb-marketing-section" open>
+        <details id="cb-marketing-section">
           <summary>Marketingové cookies</summary>
           <p>Marketingové cookies slouží k zobrazování cílených reklam a měření jejich účinnosti.</p>
           <label><input type="checkbox" id="cb-marketing"> Povolit marketingové cookies</label>
@@ -152,6 +144,7 @@
           <button id="cb-close" class="cb-btn">Zavřít</button>
         </div>
       </div>`;
+
     const d = document.createElement('div');
     d.id = 'cookie-banner';
     d.setAttribute('role', 'dialog');
@@ -160,18 +153,18 @@
     d.innerHTML = html;
     document.body.appendChild(d);
 
-    document.getElementById('cb-accept-all')
-      .onclick = () => savePrefs(true, true);
-    document.getElementById('cb-settings-toggle')
-      .onclick = () => toggleDetails();
-    document.getElementById('cb-close')
-      .onclick = () => hideDetails();
-    document.getElementById('cb-save')
-      .onclick = () => {
-        const a = document.getElementById('cb-analytics').checked;
-        const m = document.getElementById('cb-marketing').checked;
-        savePrefs(a, m);
-      };
+    document.getElementById('cb-accept-all').onclick = () => savePrefs(true, true);
+    document.getElementById('cb-settings-toggle').onclick = () => {
+      toggleDetails();
+      document.getElementById('cb-analytics-section').open = true;
+      document.getElementById('cb-marketing-section').open = true;
+    };
+    document.getElementById('cb-close').onclick = () => hideDetails();
+    document.getElementById('cb-save').onclick = () => {
+      const a = document.getElementById('cb-analytics').checked;
+      const m = document.getElementById('cb-marketing').checked;
+      savePrefs(a, m);
+    };
   }
 
   function toggleDetails() {
@@ -190,17 +183,16 @@
     setCookie('cc_consent_time', now, 365);
     setCookie('cc_consent_version', VERSION, 365);
 
-    if (typeof gtag === 'function') {
-      gtag('consent', 'update', {
-        'ad_storage': allowMark ? 'granted' : 'denied',
-        'analytics_storage': allowAnal ? 'granted' : 'denied',
-        'functionality_storage': 'granted',
-        'ad_user_data': allowMark ? 'granted' : 'denied',
-        'ad_personalization': allowMark ? 'granted' : 'denied'
-      });
-    }
+    gtag('consent', 'update', {
+      ad_storage: allowMark ? 'granted' : 'denied',
+      analytics_storage: allowAnal ? 'granted' : 'denied',
+      ad_user_data: allowMark ? 'granted' : 'denied',
+      ad_personalization: allowMark ? 'granted' : 'denied',
+      personalization_storage: allowMark ? 'granted' : 'denied',
+      functionality_storage: 'granted',
+      security_storage: 'granted'
+    });
 
-    window.dataLayer = window.dataLayer || [];
     dataLayer.push({
       event: 'consent_update',
       analytics_storage: allowAnal ? 'granted' : 'denied',
@@ -209,9 +201,7 @@
       consent_version: VERSION
     });
 
-    const b = document.getElementById('cookie-banner');
-    b.setAttribute('aria-hidden', 'true');
-    b.remove();
+    document.getElementById('cookie-banner').remove();
     showManageBtn();
   }
 
