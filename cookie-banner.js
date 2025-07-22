@@ -9,6 +9,16 @@
     btnBorder:      '#1A2A3A'
   };
 
+  // Consent Mode DEFAULT STAV
+  if (typeof gtag === 'function') {
+    gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'analytics_storage': 'denied',
+      'functionality_storage': 'granted',
+      'security_storage': 'granted'
+    });
+  }
+
   const css = `
     #cookie-banner, #cookie-settings-btn {
       font-family: sans-serif; color: ${COLORS.textColor};
@@ -127,12 +137,12 @@
       </div>
       <div id="cb-details" class="cb-details" style="display:none">
         <p>Vyberte, jaké soubory cookie chcete povolit:</p>
-        <details id="cb-analytics-section">
+        <details id="cb-analytics-section" open>
           <summary>Analytické cookies</summary>
-          <p>Statistické cookies pomáhají majitelům webu porozumět chování návštěvníků. Anonymně sbírají data.</p>
+          <p>Statistické cookies pomáhají majitelům webu porozumět chování návštěvíků. Anonymně sbírají data.</p>
           <label><input type="checkbox" id="cb-analytics"> Povolit analytické cookies</label>
         </details>
-        <details id="cb-marketing-section">
+        <details id="cb-marketing-section" open>
           <summary>Marketingové cookies</summary>
           <p>Marketingové cookies slouží k zobrazování cílených reklam a měření jejich účinnosti.</p>
           <label><input type="checkbox" id="cb-marketing"> Povolit marketingové cookies</label>
@@ -153,11 +163,7 @@
     document.getElementById('cb-accept-all')
       .onclick = () => savePrefs(true, true);
     document.getElementById('cb-settings-toggle')
-      .onclick = () => {
-        toggleDetails();
-        document.getElementById('cb-analytics-section').open = true;
-        document.getElementById('cb-marketing-section').open = true;
-      };
+      .onclick = () => toggleDetails();
     document.getElementById('cb-close')
       .onclick = () => hideDetails();
     document.getElementById('cb-save')
