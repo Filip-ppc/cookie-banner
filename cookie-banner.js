@@ -70,7 +70,7 @@
   style.innerHTML = css;
   document.head.appendChild(style);
 
-  const POLICY_URL = '/cookie-policy.html';
+  const POLICY_URL = '/cookie-policy/';
   const VERSION = '1.0';
 
   function setCookie(name, value, days) {
