@@ -96,13 +96,15 @@
 
   const cm = getCookie('cc_marketing'), ca = getCookie('cc_analytics');
   if (cm || ca) {
-    gtag('consent', 'update', {
-      'ad_storage': cm === 'yes' ? 'granted' : 'denied',
-      'analytics_storage': ca === 'yes' ? 'granted' : 'denied',
-      'functionality_storage': 'granted',
-      'ad_user_data': cm === 'yes' ? 'granted' : 'denied',
-      'ad_personalization': cm === 'yes' ? 'granted' : 'denied'
-    });
+    if (typeof gtag === 'function') {
+      gtag('consent', 'update', {
+        'ad_storage': cm === 'yes' ? 'granted' : 'denied',
+        'analytics_storage': ca === 'yes' ? 'granted' : 'denied',
+        'functionality_storage': 'granted',
+        'ad_user_data': cm === 'yes' ? 'granted' : 'denied',
+        'ad_personalization': cm === 'yes' ? 'granted' : 'denied'
+      });
+    }
     showManageBtn();
     return;
   }
@@ -125,15 +127,15 @@
       </div>
       <div id="cb-details" class="cb-details" style="display:none">
         <p>Vyberte, jaké soubory cookie chcete povolit:</p>
-        <details id="cb-anal-section">
+        <details id="cb-analytics-section">
           <summary>Analytické cookies</summary>
           <p>Statistické cookies pomáhají majitelům webu porozumět chování návštěvníků. Anonymně sbírají data.</p>
-          <label><input type="checkbox" id="cb-anal"> Povolit analytické cookies</label>
+          <label><input type="checkbox" id="cb-analytics"> Povolit analytické cookies</label>
         </details>
-        <details id="cb-mark-section">
+        <details id="cb-marketing-section">
           <summary>Marketingové cookies</summary>
           <p>Marketingové cookies slouží k zobrazování cílených reklam a měření jejich účinnosti.</p>
-          <label><input type="checkbox" id="cb-mark"> Povolit marketingové cookies</label>
+          <label><input type="checkbox" id="cb-marketing"> Povolit marketingové cookies</label>
         </details>
         <div class="cb-buttons">
           <button id="cb-save" class="cb-btn primary">Uložit</button>
@@ -153,16 +155,15 @@
     document.getElementById('cb-settings-toggle')
       .onclick = () => {
         toggleDetails();
-        // automaticky rozbalit sekce
-        document.getElementById('cb-anal-section').open = true;
-        document.getElementById('cb-mark-section').open = true;
+        document.getElementById('cb-analytics-section').open = true;
+        document.getElementById('cb-marketing-section').open = true;
       };
     document.getElementById('cb-close')
       .onclick = () => hideDetails();
     document.getElementById('cb-save')
       .onclick = () => {
-        const a = document.getElementById('cb-anal').checked;
-        const m = document.getElementById('cb-mark').checked;
+        const a = document.getElementById('cb-analytics').checked;
+        const m = document.getElementById('cb-marketing').checked;
         savePrefs(a, m);
       };
   }
@@ -183,13 +184,15 @@
     setCookie('cc_consent_time', now, 365);
     setCookie('cc_consent_version', VERSION, 365);
 
-    gtag('consent', 'update', {
-      'ad_storage': allowMark ? 'granted' : 'denied',
-      'analytics_storage': allowAnal ? 'granted' : 'denied',
-      'functionality_storage': 'granted',
-      'ad_user_data': allowMark ? 'granted' : 'denied',
-      'ad_personalization': allowMark ? 'granted' : 'denied'
-    });
+    if (typeof gtag === 'function') {
+      gtag('consent', 'update', {
+        'ad_storage': allowMark ? 'granted' : 'denied',
+        'analytics_storage': allowAnal ? 'granted' : 'denied',
+        'functionality_storage': 'granted',
+        'ad_user_data': allowMark ? 'granted' : 'denied',
+        'ad_personalization': allowMark ? 'granted' : 'denied'
+      });
+    }
 
     window.dataLayer = window.dataLayer || [];
     dataLayer.push({
