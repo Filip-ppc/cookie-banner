@@ -14,66 +14,61 @@
       z-index: 9999;
     }
     #cookie-banner {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      width: 100%; max-width: 100%;
-      background: ${COLORS.bannerBg};
-      border-top: 2px solid ${COLORS.bannerBorder};
-      padding: 32px 48px;
-      font-size: 16px;
+      position: fixed; bottom: 0; left: 0; width: 100%;
+      background: ${COLORS.bannerBg}; border-top: 2px solid ${COLORS.bannerBorder};
+      padding: 30px 40px; font-size: 16px;
       box-shadow: 0 -2px 8px rgba(0,0,0,.15);
     }
     #cookie-banner[aria-hidden="false"] { display: block; }
     #cookie-banner[aria-hidden="true"]  { display: none; }
     #cookie-banner .cb-header {
-      font-size: 20px; font-weight: bold; margin-bottom: 15px;
+      font-size: 20px; font-weight: bold; margin-bottom: 10px;
     }
     #cookie-banner .cb-description {
-      margin: 10px 0 20px; line-height: 1.6;
+      margin-bottom: 20px; line-height: 1.6;
+    }
+    #cookie-banner .cb-actions {
+      display: flex; justify-content: flex-end; gap: 15px; flex-wrap: wrap;
     }
     #cookie-banner .cb-btn {
-      padding: 12px 24px; font-size: 16px;
-      border-radius: 6px; border: 2px solid ${COLORS.btnBorder};
-      background: transparent; cursor: pointer;
+      padding: 12px 20px; font-size: 16px; border-radius: 6px;
+      border: 2px solid ${COLORS.btnBorder}; background: transparent; cursor: pointer;
     }
     #cookie-banner .cb-btn.primary {
       background: ${COLORS.btnBg}; color: ${COLORS.btnText};
     }
     #cookie-banner .cb-btn.link {
-      background: none; border: none;
-      text-decoration: underline; padding: 0;
+      background: none; border: none; text-decoration: underline; padding: 0;
     }
     #cookie-banner .cb-details {
       margin-top: 15px; border-top: 1px solid #ccc; padding-top: 15px;
     }
-    #cookie-banner details p,
+    #cookie-banner details {
+      margin-bottom: 10px;
+    }
+    #cookie-banner summary {
+      font-weight: bold; cursor: pointer; outline: none;
+    }
+    #cookie-banner details p {
+      margin: 8px 0 0 20px; font-size: 14px; line-height: 1.4;
+    }
     #cookie-banner details label {
-      font-size: 15px;
-    }
-    #cookie-banner .cb-actions {
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
-    }
-    #cookie-banner .cb-buttons {
-      display: flex; gap: 12px; margin-top: 12px;
+      display: block; margin: 5px 0 0 20px; font-size: 14px;
     }
     #cookie-settings-btn {
       position: fixed; bottom: 20px; right: 20px;
-      background: ${COLORS.btnBg}; color: ${COLORS.btnText};
-      padding: 10px 14px; border-radius: 4px;
-      border: none; cursor: pointer; display: none;
+      background: ${COLORS.btnBg}; color: ${COLORS.btnText}; border: none;
+      padding: 10px 14px; border-radius: 4px; cursor: pointer; display: none;
     }
     @media (max-width: 768px) {
       #cookie-banner {
-        padding: 24px 20px; font-size: 14px;
-        flex-direction: column;
-      }
-      #cookie-banner .cb-btn {
-        font-size: 14px; padding: 10px 16px;
+        padding: 20px; font-size: 14px;
       }
       #cookie-banner .cb-actions {
-        flex-direction: column; align-items: stretch;
+        justify-content: center; flex-direction: column; gap: 10px;
       }
-      .cb-buttons {
-        flex-direction: column;
+      #cookie-banner .cb-btn {
+        width: 100%; text-align: center;
       }
     }
   `;
@@ -92,7 +87,7 @@
   }
 
   function getCookie(name) {
-    const m = document.cookie.match('(^|;)\\s*' + name + '=([^;]+)');
+    const m = document.cookie.match('(^|;)\s*' + name + '=([^;]+)');
     return m ? m.pop() : '';
   }
 
@@ -124,25 +119,8 @@
         For more info, see our <a href="${POLICY_URL}" target="_blank">Cookie Policy</a>.
       </p>
       <div class="cb-actions">
+        <button id="cb-settings-toggle" class="cb-btn link">Cookie settings</button>
         <button id="cb-accept-all" class="cb-btn primary">Allow all</button>
-        <button id="cb-settings-toggle" class="cb-btn link">Cookie settings ▼</button>
-      </div>
-      <div id="cb-details" class="cb-details" style="display:none">
-        <p>Select which cookies you want to allow:</p>
-        <details open>
-          <summary>Analytics cookies</summary>
-          <p>Help us understand visitor behavior anonymously for improvement.</p>
-          <label><input type="checkbox" id="cb-analytics"> Allow analytics cookies</label>
-        </details>
-        <details open>
-          <summary>Marketing cookies</summary>
-          <p>Used to show personalized ads and measure their effectiveness.</p>
-          <label><input type="checkbox" id="cb-marketing"> Allow marketing cookies</label>
-        </details>
-        <div class="cb-buttons">
-          <button id="cb-save" class="cb-btn primary">Save</button>
-          <button id="cb-close" class="cb-btn">Close</button>
-        </div>
       </div>
     `;
 
@@ -156,21 +134,10 @@
 
     document.getElementById('cb-accept-all').onclick = () => savePrefs(true, true);
     document.getElementById('cb-settings-toggle').onclick = () => toggleDetails();
-    document.getElementById('cb-close').onclick = () => hideDetails();
-    document.getElementById('cb-save').onclick = () => {
-      const a = document.getElementById('cb-analytics').checked;
-      const m = document.getElementById('cb-marketing').checked;
-      savePrefs(a, m);
-    };
   }
 
   function toggleDetails() {
-    const d = document.getElementById('cb-details');
-    d.style.display = d.style.display === 'none' ? 'block' : 'none';
-  }
-
-  function hideDetails() {
-    document.getElementById('cb-details').style.display = 'none';
+    alert('Open full settings dialog if needed');
   }
 
   function savePrefs(allowAnal, allowMark) {
@@ -200,9 +167,7 @@
       consent_version: VERSION
     });
 
-    const b = document.getElementById('cookie-banner');
-    b.setAttribute('aria-hidden', 'true');
-    b.remove();
+    document.getElementById('cookie-banner')?.remove();
     showManageBtn();
   }
 
