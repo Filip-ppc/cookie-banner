@@ -1,4 +1,3 @@
-<script>
 (function() {
   const COLORS = {
     bannerBg: '#F8F4EC',
@@ -15,27 +14,23 @@
       z-index: 9999;
     }
     #cookie-banner {
-      position: fixed; bottom: 0; left: 0;
-      width: 100%;
-      background: ${COLORS.bannerBg}; border-top: 2px solid ${COLORS.bannerBorder};
-      padding: 30px 40px; font-size: 16px;
-      box-shadow: 0 -2px 8px rgba(0,0,0,.15);
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      max-width: 600px; width: calc(100% - 40px);
+      background: ${COLORS.bannerBg}; border: 2px solid ${COLORS.bannerBorder};
+      border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
     }
     #cookie-banner[aria-hidden="false"] { display: block; }
     #cookie-banner[aria-hidden="true"]  { display: none; }
     #cookie-banner .cb-header {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 15px;
+      display: flex; justify-content: space-between; align-items: center;
     }
+    #cookie-banner .cb-title { font-size: 18px; font-weight: bold; margin: 0; }
     #cookie-banner .cb-description {
-      margin: 10px 0 20px;
-      line-height: 1.6;
+      margin: 10px 0 15px; font-size: 14px; line-height: 1.4;
     }
     #cookie-banner .cb-btn {
-      padding: 12px 20px; font-size: 16px; border-radius: 6px;
-      border: 2px solid ${COLORS.btnBorder}; background: transparent;
-      cursor: pointer;
+      padding: 8px 12px; font-size: 14px; border-radius: 4px;
+      border: 2px solid ${COLORS.btnBorder}; background: transparent; cursor: pointer;
     }
     #cookie-banner .cb-btn.primary {
       background: ${COLORS.btnBg}; color: ${COLORS.btnText};
@@ -50,37 +45,24 @@
     #cookie-banner summary {
       font-weight: bold; cursor: pointer; outline: none;
     }
-    #cookie-banner details p {
-      margin: 8px 0 0 20px; font-size: 14px; line-height: 1.4;
-    }
-    #cookie-banner details label {
-      display: block; margin: 5px 0 0 20px; font-size: 14px;
-    }
+    #cookie-banner details p { margin: 8px 0 0 20px; font-size: 13px; line-height: 1.4; }
+    #cookie-banner details label { display: block; margin: 5px 0 0 20px; font-size: 14px; }
     #cookie-banner .cb-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      position: relative;
-      min-height: 60px;
-      padding-top: 10px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
     }
     #cookie-banner .cb-actions .cb-buttons {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      margin: 0 24px 20px 0;
+      display: flex; gap: 10px; margin-top: 10px;
     }
     #cookie-settings-btn {
       position: fixed; bottom: 20px; right: 20px;
       background: ${COLORS.btnBg}; color: ${COLORS.btnText}; border: none;
-      padding: 10px 14px; border-radius: 4px; cursor: pointer; display: none;
+      padding: 8px 12px; border-radius: 4px; cursor: pointer; display: none;
     }
-    @media (max-width: 768px) {
-      #cookie-banner { padding: 20px; font-size: 14px; }
-      #cookie-banner .cb-btn { font-size: 14px; padding: 10px 14px; }
-      #cookie-banner .cb-header { font-size: 18px; }
+    @media (max-width: 480px) {
+      #cookie-banner { padding: 15px; }
+      #cookie-banner .cb-header { flex-direction: column; align-items: flex-start; }
       #cookie-banner .cb-actions { flex-direction: column; align-items: stretch; }
-      #cookie-banner .cb-actions .cb-buttons { position: static; margin: 10px 0 0; }
+      #cookie-banner .cb-actions .cb-buttons { flex-direction: column; }
     }
   `;
 
@@ -98,7 +80,7 @@
   }
 
   function getCookie(name) {
-    const m = document.cookie.match('(^|;)\\s*' + name + '=([^;]+)');
+    const m = document.cookie.match('(^|;)\s*' + name + '=([^;]+)');
     return m ? m.pop() : '';
   }
 
@@ -124,19 +106,35 @@
 
   function renderBanner() {
     const html = `
-      <div class="cb-header">This website uses cookies</div>
+      <div class="cb-header">
+        <p class="cb-title">This website uses cookies</p>
+        <button id="cb-accept-all" class="cb-btn primary">Allow All</button>
+      </div>
       <p class="cb-description">
         We use cookies to personalize content and ads, to provide social media features and to analyze our traffic.
-        You can find more details and settings in our
+        More information and settings are available in our
         <a href="${POLICY_URL}" target="_blank">Cookie Policy</a>.
       </p>
       <div class="cb-actions">
-        <button id="cb-settings-toggle" class="cb-btn link">Cookie settings</button>
-        <div class="cb-buttons">
-          <button id="cb-accept-all" class="cb-btn primary">Allow all</button>
-        </div>
+        <button id="cb-settings-toggle" class="cb-btn link">Detailed settings ▼</button>
       </div>
-    `;
+      <div id="cb-details" class="cb-details" style="display:none">
+        <p>Select which cookies you want to allow:</p>
+        <details id="cb-analytics-section" open>
+          <summary>Analytics Cookies</summary>
+          <p>Analytics cookies help website owners understand visitor interactions anonymously.</p>
+          <label><input type="checkbox" id="cb-analytics"> Enable analytics cookies</label>
+        </details>
+        <details id="cb-marketing-section" open>
+          <summary>Marketing Cookies</summary>
+          <p>Marketing cookies are used to display targeted ads and measure their effectiveness.</p>
+          <label><input type="checkbox" id="cb-marketing"> Enable marketing cookies</label>
+        </details>
+        <div class="cb-buttons">
+          <button id="cb-save" class="cb-btn primary">Save</button>
+          <button id="cb-close" class="cb-btn">Close</button>
+        </div>
+      </div>`;
 
     const d = document.createElement('div');
     d.id = 'cookie-banner';
@@ -147,7 +145,22 @@
     document.body.appendChild(d);
 
     document.getElementById('cb-accept-all').onclick = () => savePrefs(true, true);
-    document.getElementById('cb-settings-toggle').onclick = () => showManageBtn();
+    document.getElementById('cb-settings-toggle').onclick = () => toggleDetails();
+    document.getElementById('cb-close').onclick = () => hideDetails();
+    document.getElementById('cb-save').onclick = () => {
+      const a = document.getElementById('cb-analytics').checked;
+      const m = document.getElementById('cb-marketing').checked;
+      savePrefs(a, m);
+    };
+  }
+
+  function toggleDetails() {
+    const det = document.getElementById('cb-details');
+    det.style.display = det.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function hideDetails() {
+    document.getElementById('cb-details').style.display = 'none';
   }
 
   function savePrefs(allowAnal, allowMark) {
@@ -199,4 +212,3 @@
     btn.style.display = 'block';
   }
 })();
-</script>
