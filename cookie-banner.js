@@ -1,12 +1,11 @@
 (function() {
-  // 🔧 PERSONALIZACE – upravitelné barvy
   const COLORS = {
-    bannerBg:     '#F8F4EC',
+    bannerBg: '#F8F4EC',
     bannerBorder: '#a62b0c',
-    textColor:    '#1A2A3A',
-    btnBg:        '#1A2A3A',
-    btnText:      '#fff',
-    btnBorder:    '#1A2A3A'
+    textColor: '#1A2A3A',
+    btnBg: '#1A2A3A',
+    btnText: '#fff',
+    btnBorder: '#1A2A3A'
   };
 
   const css = `
@@ -15,12 +14,10 @@
       z-index: 9999;
     }
     #cookie-banner {
-      position: fixed; bottom: 20px; left: 50%;
-      transform: translateX(-50%);
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
       max-width: 600px; width: calc(100% - 40px);
       background: ${COLORS.bannerBg}; border: 2px solid ${COLORS.bannerBorder};
-      border-radius: 8px; padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+      border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
     }
     #cookie-banner[aria-hidden="false"] { display: block; }
     #cookie-banner[aria-hidden="true"]  { display: none; }
@@ -33,15 +30,13 @@
     }
     #cookie-banner .cb-btn {
       padding: 8px 12px; font-size: 14px; border-radius: 4px;
-      border: 2px solid ${COLORS.btnBorder}; background: transparent;
-      cursor: pointer;
+      border: 2px solid ${COLORS.btnBorder}; background: transparent; cursor: pointer;
     }
     #cookie-banner .cb-btn.primary {
       background: ${COLORS.btnBg}; color: ${COLORS.btnText};
     }
     #cookie-banner .cb-btn.link {
-      background: none; border: none; text-decoration: underline;
-      padding: 0;
+      background: none; border: none; text-decoration: underline; padding: 0;
     }
     #cookie-banner .cb-details {
       margin-top: 15px; border-top: 1px solid #ccc; padding-top: 15px;
@@ -50,15 +45,10 @@
     #cookie-banner summary {
       font-weight: bold; cursor: pointer; outline: none;
     }
-    #cookie-banner details p {
-      margin: 8px 0 0 20px; font-size: 13px; line-height: 1.4;
-    }
-    #cookie-banner details label {
-      display: block; margin: 5px 0 0 20px; font-size: 14px;
-    }
+    #cookie-banner details p { margin: 8px 0 0 20px; font-size: 13px; line-height: 1.4; }
+    #cookie-banner details label { display: block; margin: 5px 0 0 20px; font-size: 14px; }
     #cookie-banner .cb-actions {
-      display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: wrap;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
     }
     #cookie-banner .cb-actions .cb-buttons {
       display: flex; gap: 10px; margin-top: 10px;
@@ -66,8 +56,7 @@
     #cookie-settings-btn {
       position: fixed; bottom: 20px; right: 20px;
       background: ${COLORS.btnBg}; color: ${COLORS.btnText}; border: none;
-      padding: 8px 12px; border-radius: 4px; cursor: pointer;
-      display: none;
+      padding: 8px 12px; border-radius: 4px; cursor: pointer; display: none;
     }
     @media (max-width: 480px) {
       #cookie-banner { padding: 15px; }
@@ -76,12 +65,13 @@
       #cookie-banner .cb-actions .cb-buttons { flex-direction: column; }
     }
   `;
-  const style = document.createElement('style');
-  style.innerHTML = css;
-  document.head.appendChild(style);
 
   const POLICY_URL = 'https://youronlinecalculator.site/cookie-policy/';
   const VERSION = '1.0';
+
+  const style = document.createElement('style');
+  style.innerHTML = css;
+  document.head.appendChild(style);
 
   function setCookie(name, value, days) {
     const d = new Date();
@@ -102,19 +92,12 @@
         'analytics_storage': ca === 'yes' ? 'granted' : 'denied',
         'functionality_storage': 'granted',
         'ad_user_data': cm === 'yes' ? 'granted' : 'denied',
-        'ad_personalization': cm === 'yes' ? 'granted' : 'denied'
+        'ad_personalization': cm === 'yes' ? 'granted' : 'denied',
+        'personalization_storage': cm === 'yes' ? 'granted' : 'denied'
       });
     }
-
     window.dataLayer = window.dataLayer || [];
-    dataLayer.push({
-      event: 'cookie_consent_update',
-      analytics_storage: ca === 'yes' ? 'granted' : 'denied',
-      ad_storage: cm === 'yes' ? 'granted' : 'denied',
-      consent_time: new Date().toISOString(),
-      consent_version: VERSION
-    });
-
+    dataLayer.push({ event: 'cookie_consent_update' });
     showManageBtn();
     return;
   }
@@ -137,12 +120,12 @@
       </div>
       <div id="cb-details" class="cb-details" style="display:none">
         <p>Vyberte, jaké soubory cookie chcete povolit:</p>
-        <details id="cb-analytics-section">
+        <details id="cb-analytics-section" open>
           <summary>Analytické cookies</summary>
-          <p>Statistické cookies pomáhají majitelům webu porozumět chování návštěvníků. Anonymně sbírají data.</p>
+          <p>Statistické cookies pomáhají majitelům webu porozumět chování návštěvíků.</p>
           <label><input type="checkbox" id="cb-analytics"> Povolit analytické cookies</label>
         </details>
-        <details id="cb-marketing-section">
+        <details id="cb-marketing-section" open>
           <summary>Marketingové cookies</summary>
           <p>Marketingové cookies slouží k zobrazování cílených reklam a měření jejich účinnosti.</p>
           <label><input type="checkbox" id="cb-marketing"> Povolit marketingové cookies</label>
@@ -152,7 +135,7 @@
           <button id="cb-close" class="cb-btn">Zavřít</button>
         </div>
       </div>`;
-    
+
     const d = document.createElement('div');
     d.id = 'cookie-banner';
     d.setAttribute('role', 'dialog');
@@ -162,11 +145,7 @@
     document.body.appendChild(d);
 
     document.getElementById('cb-accept-all').onclick = () => savePrefs(true, true);
-    document.getElementById('cb-settings-toggle').onclick = () => {
-      toggleDetails();
-      document.getElementById('cb-analytics-section').open = true;
-      document.getElementById('cb-marketing-section').open = true;
-    };
+    document.getElementById('cb-settings-toggle').onclick = () => toggleDetails();
     document.getElementById('cb-close').onclick = () => hideDetails();
     document.getElementById('cb-save').onclick = () => {
       const a = document.getElementById('cb-analytics').checked;
@@ -197,7 +176,8 @@
         'analytics_storage': allowAnal ? 'granted' : 'denied',
         'functionality_storage': 'granted',
         'ad_user_data': allowMark ? 'granted' : 'denied',
-        'ad_personalization': allowMark ? 'granted' : 'denied'
+        'ad_personalization': allowMark ? 'granted' : 'denied',
+        'personalization_storage': allowMark ? 'granted' : 'denied'
       });
     }
 
