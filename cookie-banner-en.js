@@ -112,8 +112,6 @@
     return;
   }
 
-  window.addEventListener('DOMContentLoaded', renderBanner);
-
   function renderBanner() {
     const html = `
       <div class="cb-header">This website uses cookies</div>
@@ -219,6 +217,13 @@
       document.body.appendChild(btn);
     }
     btn.style.display = 'block';
+  }
+
+  // 💡 Spolehlivé spuštění
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', renderBanner);
+  } else {
+    renderBanner();
   }
 })();
 </script>
