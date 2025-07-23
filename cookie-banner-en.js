@@ -1,3 +1,4 @@
+<script>
 (function() {
   const COLORS = {
     bannerBg: '#F8F4EC',
@@ -10,106 +11,76 @@
 
   const css = `
     #cookie-banner, #cookie-settings-btn {
-      font-family: sans-serif;
-      color: ${COLORS.textColor};
+      font-family: sans-serif; color: ${COLORS.textColor};
       z-index: 9999;
     }
     #cookie-banner {
-      position: fixed;
-      bottom: 0;
-      left: 0;
+      position: fixed; bottom: 0; left: 0;
       width: 100%;
-      background: ${COLORS.bannerBg};
-      border-top: 2px solid ${COLORS.bannerBorder};
-      padding: 30px 40px;
-      font-size: 16px;
+      background: ${COLORS.bannerBg}; border-top: 2px solid ${COLORS.bannerBorder};
+      padding: 30px 40px; font-size: 16px;
       box-shadow: 0 -2px 8px rgba(0,0,0,.15);
     }
     #cookie-banner[aria-hidden="false"] { display: block; }
     #cookie-banner[aria-hidden="true"]  { display: none; }
-
     #cookie-banner .cb-header {
       font-size: 20px;
       font-weight: bold;
       margin-bottom: 15px;
     }
-
     #cookie-banner .cb-description {
       margin: 10px 0 20px;
       line-height: 1.6;
     }
-
+    #cookie-banner .cb-btn {
+      padding: 12px 20px; font-size: 16px; border-radius: 6px;
+      border: 2px solid ${COLORS.btnBorder}; background: transparent;
+      cursor: pointer;
+    }
+    #cookie-banner .cb-btn.primary {
+      background: ${COLORS.btnBg}; color: ${COLORS.btnText};
+    }
+    #cookie-banner .cb-btn.link {
+      background: none; border: none; text-decoration: underline; padding: 0;
+    }
+    #cookie-banner .cb-details {
+      margin-top: 15px; border-top: 1px solid #ccc; padding-top: 15px;
+    }
+    #cookie-banner details { margin-bottom: 10px; }
+    #cookie-banner summary {
+      font-weight: bold; cursor: pointer; outline: none;
+    }
+    #cookie-banner details p {
+      margin: 8px 0 0 20px; font-size: 14px; line-height: 1.4;
+    }
+    #cookie-banner details label {
+      display: block; margin: 5px 0 0 20px; font-size: 14px;
+    }
     #cookie-banner .cb-actions {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-top: 20px;
+      align-items: flex-end;
+      position: relative;
+      min-height: 60px;
+      padding-top: 10px;
     }
-
-    #cookie-banner .cb-buttons {
-      display: flex;
-      gap: 12px;
-      margin-top: 10px;
+    #cookie-banner .cb-actions .cb-buttons {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      margin: 0 24px 20px 0;
     }
-
-    #cookie-banner .cb-btn {
-      padding: 14px 22px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: 2px solid ${COLORS.btnBorder};
-      background: transparent;
-      cursor: pointer;
-      min-width: 140px;
-    }
-
-    #cookie-banner .cb-btn.primary {
-      background: ${COLORS.btnBg};
-      color: ${COLORS.btnText};
-    }
-
-    #cookie-banner .cb-btn.link {
-      background: none;
-      border: none;
-      text-decoration: underline;
-      padding: 0;
-      font-size: 16px;
-    }
-
     #cookie-settings-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: ${COLORS.btnBg};
-      color: ${COLORS.btnText};
-      border: none;
-      padding: 10px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      display: none;
+      position: fixed; bottom: 20px; right: 20px;
+      background: ${COLORS.btnBg}; color: ${COLORS.btnText}; border: none;
+      padding: 10px 14px; border-radius: 4px; cursor: pointer; display: none;
     }
-
     @media (max-width: 768px) {
-      #cookie-banner {
-        padding: 20px;
-        font-size: 14px;
-      }
-      #cookie-banner .cb-actions {
-        flex-direction: column-reverse;
-        align-items: flex-start;
-        gap: 12px;
-      }
-      #cookie-banner .cb-buttons {
-        width: 100%;
-        justify-content: flex-end;
-      }
-      #cookie-banner .cb-btn {
-        font-size: 14px;
-        padding: 10px 14px;
-      }
-      #cookie-banner .cb-header {
-        font-size: 18px;
-      }
+      #cookie-banner { padding: 20px; font-size: 14px; }
+      #cookie-banner .cb-btn { font-size: 14px; padding: 10px 14px; }
+      #cookie-banner .cb-header { font-size: 18px; }
+      #cookie-banner .cb-actions { flex-direction: column; align-items: stretch; }
+      #cookie-banner .cb-actions .cb-buttons { position: static; margin: 10px 0 0; }
     }
   `;
 
@@ -156,7 +127,8 @@
       <div class="cb-header">This website uses cookies</div>
       <p class="cb-description">
         We use cookies to personalize content and ads, to provide social media features and to analyze our traffic.
-        For more info, see our <a href="${POLICY_URL}" target="_blank">Cookie Policy</a>.
+        You can find more details and settings in our
+        <a href="${POLICY_URL}" target="_blank">Cookie Policy</a>.
       </p>
       <div class="cb-actions">
         <button id="cb-settings-toggle" class="cb-btn link">Cookie settings</button>
@@ -175,11 +147,7 @@
     document.body.appendChild(d);
 
     document.getElementById('cb-accept-all').onclick = () => savePrefs(true, true);
-    document.getElementById('cb-settings-toggle').onclick = () => {
-      setCookie('cc_analytics', '', -1);
-      setCookie('cc_marketing', '', -1);
-      location.reload();
-    };
+    document.getElementById('cb-settings-toggle').onclick = () => showManageBtn();
   }
 
   function savePrefs(allowAnal, allowMark) {
@@ -231,3 +199,4 @@
     btn.style.display = 'block';
   }
 })();
+</script>
