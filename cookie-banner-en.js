@@ -10,65 +10,105 @@
 
   const css = `
     #cookie-banner, #cookie-settings-btn {
-      font-family: sans-serif; color: ${COLORS.textColor};
+      font-family: sans-serif;
+      color: ${COLORS.textColor};
       z-index: 9999;
     }
     #cookie-banner {
-      position: fixed; bottom: 0; left: 0; width: 100%;
-      background: ${COLORS.bannerBg}; border-top: 2px solid ${COLORS.bannerBorder};
-      padding: 30px 40px; font-size: 16px;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: ${COLORS.bannerBg};
+      border-top: 2px solid ${COLORS.bannerBorder};
+      padding: 30px 40px;
+      font-size: 16px;
       box-shadow: 0 -2px 8px rgba(0,0,0,.15);
     }
     #cookie-banner[aria-hidden="false"] { display: block; }
     #cookie-banner[aria-hidden="true"]  { display: none; }
+
     #cookie-banner .cb-header {
-      font-size: 20px; font-weight: bold; margin-bottom: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 15px;
     }
+
     #cookie-banner .cb-description {
-      margin-bottom: 20px; line-height: 1.6;
+      margin: 10px 0 20px;
+      line-height: 1.6;
     }
+
     #cookie-banner .cb-actions {
-      display: flex; justify-content: flex-end; gap: 15px; flex-wrap: wrap;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 20px;
     }
+
+    #cookie-banner .cb-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
     #cookie-banner .cb-btn {
-      padding: 12px 20px; font-size: 16px; border-radius: 6px;
-      border: 2px solid ${COLORS.btnBorder}; background: transparent; cursor: pointer;
+      padding: 14px 22px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 2px solid ${COLORS.btnBorder};
+      background: transparent;
+      cursor: pointer;
+      min-width: 140px;
     }
+
     #cookie-banner .cb-btn.primary {
-      background: ${COLORS.btnBg}; color: ${COLORS.btnText};
+      background: ${COLORS.btnBg};
+      color: ${COLORS.btnText};
     }
+
     #cookie-banner .cb-btn.link {
-      background: none; border: none; text-decoration: underline; padding: 0;
+      background: none;
+      border: none;
+      text-decoration: underline;
+      padding: 0;
+      font-size: 16px;
     }
-    #cookie-banner .cb-details {
-      margin-top: 15px; border-top: 1px solid #ccc; padding-top: 15px;
-    }
-    #cookie-banner details {
-      margin-bottom: 10px;
-    }
-    #cookie-banner summary {
-      font-weight: bold; cursor: pointer; outline: none;
-    }
-    #cookie-banner details p {
-      margin: 8px 0 0 20px; font-size: 14px; line-height: 1.4;
-    }
-    #cookie-banner details label {
-      display: block; margin: 5px 0 0 20px; font-size: 14px;
-    }
+
     #cookie-settings-btn {
-      position: fixed; bottom: 20px; right: 20px;
-      background: ${COLORS.btnBg}; color: ${COLORS.btnText}; border: none;
-      padding: 10px 14px; border-radius: 4px; cursor: pointer; display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: ${COLORS.btnBg};
+      color: ${COLORS.btnText};
+      border: none;
+      padding: 10px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: none;
     }
+
     @media (max-width: 768px) {
       #cookie-banner {
-        padding: 20px; font-size: 14px;
+        padding: 20px;
+        font-size: 14px;
       }
       #cookie-banner .cb-actions {
-        justify-content: center; flex-direction: column; gap: 10px;
+        flex-direction: column-reverse;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      #cookie-banner .cb-buttons {
+        width: 100%;
+        justify-content: flex-end;
       }
       #cookie-banner .cb-btn {
-        width: 100%; text-align: center;
+        font-size: 14px;
+        padding: 10px 14px;
+      }
+      #cookie-banner .cb-header {
+        font-size: 18px;
       }
     }
   `;
@@ -87,7 +127,7 @@
   }
 
   function getCookie(name) {
-    const m = document.cookie.match('(^|;)\s*' + name + '=([^;]+)');
+    const m = document.cookie.match('(^|;)\\s*' + name + '=([^;]+)');
     return m ? m.pop() : '';
   }
 
@@ -120,7 +160,9 @@
       </p>
       <div class="cb-actions">
         <button id="cb-settings-toggle" class="cb-btn link">Cookie settings</button>
-        <button id="cb-accept-all" class="cb-btn primary">Allow all</button>
+        <div class="cb-buttons">
+          <button id="cb-accept-all" class="cb-btn primary">Allow all</button>
+        </div>
       </div>
     `;
 
@@ -133,11 +175,11 @@
     document.body.appendChild(d);
 
     document.getElementById('cb-accept-all').onclick = () => savePrefs(true, true);
-    document.getElementById('cb-settings-toggle').onclick = () => toggleDetails();
-  }
-
-  function toggleDetails() {
-    alert('Open full settings dialog if needed');
+    document.getElementById('cb-settings-toggle').onclick = () => {
+      setCookie('cc_analytics', '', -1);
+      setCookie('cc_marketing', '', -1);
+      location.reload();
+    };
   }
 
   function savePrefs(allowAnal, allowMark) {
@@ -167,7 +209,9 @@
       consent_version: VERSION
     });
 
-    document.getElementById('cookie-banner')?.remove();
+    const b = document.getElementById('cookie-banner');
+    b.setAttribute('aria-hidden', 'true');
+    b.remove();
     showManageBtn();
   }
 
