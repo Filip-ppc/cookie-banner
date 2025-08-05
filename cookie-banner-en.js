@@ -80,7 +80,7 @@
   }
 
   function getCookie(name) {
-    const m = document.cookie.match('(^|;)\s*' + name + '=([^;]+)');
+    const m = document.cookie.match('(^|;)\\s*' + name + '=([^;]+)');
     return m ? m.pop() : '';
   }
 
@@ -108,27 +108,27 @@
     const html = `
       <div class="cb-header">
         <p class="cb-title">This website uses cookies</p>
-        <button id="cb-accept-all" class="cb-btn primary">Allow All</button>
+        <button id="cb-accept-all" class="cb-btn primary">Allow all</button>
       </div>
       <p class="cb-description">
-        We use cookies to personalize content and ads, to provide social media features and to analyze our traffic.
-        More information and settings are available in our
+        We use cookies to personalize content and ads, provide social media features, and analyze our traffic.
+        For more details and settings, see our
         <a href="${POLICY_URL}" target="_blank">Cookie Policy</a>.
       </p>
       <div class="cb-actions">
         <button id="cb-settings-toggle" class="cb-btn link">Detailed settings ▼</button>
       </div>
       <div id="cb-details" class="cb-details" style="display:none">
-        <p>Select which cookies you want to allow:</p>
+        <p>Select which types of cookies you want to allow:</p>
         <details id="cb-analytics-section" open>
-          <summary>Analytics Cookies</summary>
-          <p>Analytics cookies help website owners understand visitor interactions anonymously.</p>
-          <label><input type="checkbox" id="cb-analytics"> Enable analytics cookies</label>
+          <summary>Analytics cookies</summary>
+          <p>These cookies help website owners understand visitor behavior.</p>
+          <label><input type="checkbox" id="cb-analytics"> Allow analytics cookies</label>
         </details>
         <details id="cb-marketing-section" open>
-          <summary>Marketing Cookies</summary>
-          <p>Marketing cookies are used to display targeted ads and measure their effectiveness.</p>
-          <label><input type="checkbox" id="cb-marketing"> Enable marketing cookies</label>
+          <summary>Marketing cookies</summary>
+          <p>Marketing cookies are used to show targeted ads and measure their effectiveness.</p>
+          <label><input type="checkbox" id="cb-marketing"> Allow marketing cookies</label>
         </details>
         <div class="cb-buttons">
           <button id="cb-save" class="cb-btn primary">Save</button>
